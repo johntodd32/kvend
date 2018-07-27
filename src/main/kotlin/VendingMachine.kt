@@ -4,9 +4,6 @@ class VendingMachine {
 
     private var _acceptedValue = 0
     private val _coinReturn = mutableListOf<Coin>()
-    private val refNickel = Nickel()
-    private val refDime = Dime()
-    private val refQuarter = Quarter()
 
     fun display(): String = if (_acceptedValue == 0) "INSERT COIN" else formatValue(_acceptedValue)
 
@@ -17,7 +14,7 @@ class VendingMachine {
     }
 
     fun accept(coin: Coin) {
-        if (matchCoins(coin, refNickel) || matchCoins(coin, refDime) || matchCoins(coin, refQuarter)) {
+        if (matchCoins(coin, Nickel) || matchCoins(coin, Dime) || matchCoins(coin, Quarter)) {
             _acceptedValue += coin.monetaryValue
         } else {
             _coinReturn.add(coin)

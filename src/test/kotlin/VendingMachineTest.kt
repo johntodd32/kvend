@@ -40,11 +40,10 @@ class VendingMachineTest {
     @test
     fun `test matchCoins`() {
         val q1: Coin = Quarter()
-        val q2: Coin = Quarter()
         val n: Coin = Nickel()
         val s: Coin = Slug(2121, 195, 5000, "Plain")
-        assertTrue(VendingMachine.matchCoins(q1, q2))
-        assertFalse(VendingMachine.matchCoins(q1, n))
+        assertTrue(VendingMachine.matchCoins(q1, Quarter))
+        assertFalse(VendingMachine.matchCoins(Quarter, n))
         assertFalse(VendingMachine.matchCoins(q1, s))
         assertTrue(VendingMachine.matchCoins(s, n))
     }
