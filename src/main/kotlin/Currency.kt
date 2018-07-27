@@ -18,6 +18,7 @@ class Dollar : Coin {
     override val mass = 8100
     override val edge = "Edge-Lettering"
     override val monetaryValue = 100
+    companion object
 }
 
 class HalfDollar : Coin {
@@ -26,6 +27,7 @@ class HalfDollar : Coin {
     override val mass = 11340
     override val edge = "Reeded"
     override val monetaryValue = 50
+    companion object
 }
 
 class Quarter : Coin {
@@ -34,6 +36,7 @@ class Quarter : Coin {
     override val mass = 5670
     override val edge = "Reeded"
     override val monetaryValue = 25
+    companion object
 }
 
 class Dime : Coin {
@@ -42,6 +45,7 @@ class Dime : Coin {
     override val mass = 2268
     override val edge = "Reeded"
     override val monetaryValue = 10
+    companion object
 }
 
 class Nickel : Coin {
@@ -50,6 +54,7 @@ class Nickel : Coin {
     override val mass = 5000
     override val edge = "Plain"
     override val monetaryValue = 5
+    companion object
 }
 
 class Penny : Coin {
@@ -58,6 +63,7 @@ class Penny : Coin {
     override val mass = 2500
     override val edge = "Plain"
     override val monetaryValue = 1
+    companion object
 }
 
 class Slug(diameter: Int, thickness: Int, mass: Int, edge: String) : Coin {
