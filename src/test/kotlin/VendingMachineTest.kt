@@ -77,7 +77,7 @@ class VendingMachineTest {
         machine.buy(Chips())
         assertEquals("THANK YOU", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
-        assertTrue(listOf(Nickel()).zip(machine.coinReturn()).all { (c1: Coin, c2: Coin) -> VendingMachine.matchCoins(c1, c2) }, "Extra money not returned in coin return")
+        assertTrue(compareCoinLists(listOf(Nickel()), machine.coinReturn()), "Extra money not returned in coin return")
     }
 
     @test
@@ -98,4 +98,30 @@ class VendingMachineTest {
         }
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
     }
+
+    @test
+    fun `when no money deposited coin return does nothing`() {
+        machine.cancel()
+        assertEquals(listOf(), machine.coinReturn(), "Incorrect coin return")
+        assertEquals("INSERT COIN", machine.display(), "Wrong message displayed")
+    }
+
+    @test
+    fun `coin return returns all money deposited`() {
+        machine.accept(Dime())
+        machine.cancel()
+        assertTrue(compareCoinLists(listOf(Dime()), machine.coinReturn()), "Incorrect coin return")
+        assertEquals("INSERT COIN", machine.display(), "Wrong message displayed")
+    }
+
+    @test
+    fun `vending machine makes optimal return list when cancel is pushed`() {
+        machine.accept(Dime())
+        machine.accept(Dime())
+        machine.accept(Nickel())
+        assertTrue(compareCoinLists(listOf(Quarter()), machine.coinReturn()), "Incorrect coin return")
+    }
+
+    fun compareCoinLists(l1: List<Coin>, l2: List<Coin>) =
+            l1.zip(l2).all { (c1, c2) -> VendingMachine.matchCoins(c1, c2) }
 }

@@ -49,6 +49,11 @@ class VendingMachine {
 
     fun coinReturn() = _coinReturn.toList()
 
+    fun cancel() {
+        _coinReturn.addAll(makeChange(_acceptedValue))
+        _acceptedValue = 0
+    }
+
     fun makeChange(amount: Int): List<Coin> {
         val returnList = mutableListOf<Coin>()
         var _amount = amount
