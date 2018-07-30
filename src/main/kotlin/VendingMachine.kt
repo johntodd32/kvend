@@ -1,7 +1,14 @@
 package org.jtodd.kvend.vend
 
-class VendingMachine {
+class VendingMachine(stock: Map<Product, Int>) {
 
+    init {
+        if (stock.any { (k, v) -> v < 0 }) {
+            throw IllegalArgumentException("No product can have a negative stock")
+        }
+    }
+
+    private val _stock = stock.toMutableMap()
     private var _acceptedValue = 0
     private val _coinReturn = mutableListOf<Coin>()
     private var _tempMessage = ""
@@ -40,9 +47,12 @@ class VendingMachine {
     fun buy(product: Product) {
         if (product.price > _acceptedValue) {
             setDisplayWithLifetime("PRICE: ${formatValue(product.price)}", 1)
+        } else if (!_stock.containsKey(product) || _stock[product]!! < 1) {
+            setDisplayWithLifetime("SOLD OUT", 1)
         } else {
             _coinReturn.addAll(makeChange(_acceptedValue - product.price))
             _acceptedValue = 0
+            _stock[product] = _stock[product]!! - 1
             setDisplayWithLifetime("THANK YOU", 1)
         }
     }

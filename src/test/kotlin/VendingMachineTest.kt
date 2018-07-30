@@ -6,19 +6,31 @@ import org.junit.Test as test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class VendingMachineTest {
 
+    val defaultStock: Map<Product, Int> = mapOf(ProductImpl.Cola to 10, ProductImpl.Chips to 10, ProductImpl.Candy to 10)
     lateinit var machine: VendingMachine
 
     @Before
     fun setUp() {
-        machine = VendingMachine()
+        machine = VendingMachine(defaultStock)
     }
 
     @test
     fun `when created display shows a message`() {
         assertEquals("INSERT COIN", machine.display())
+    }
+
+    @test
+    fun `cannot be initiated with negative stock for a product`() {
+        try {
+            VendingMachine(mapOf(ProductImpl.Cola to 1, ProductImpl.Candy to -1))
+            fail("Can not create vending machine with negative stock")
+        } catch (e: IllegalArgumentException) {
+
+        }
     }
 
     @test
@@ -64,7 +76,7 @@ class VendingMachineTest {
     fun `when enough money deposited and product selected display message and update accepted value`() {
         machine.accept(Quarter())
         machine.accept(Quarter())
-        machine.buy(Chips())
+        machine.buy(ProductImpl.Chips)
         assertEquals("THANK YOU", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
     }
@@ -74,7 +86,7 @@ class VendingMachineTest {
         machine.accept(Quarter())
         machine.accept(Quarter())
         machine.accept(Nickel())
-        machine.buy(Chips())
+        machine.buy(ProductImpl.Chips)
         assertEquals("THANK YOU", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
         assertTrue(compareCoinLists(listOf(Nickel()), machine.coinReturn()), "Extra money not returned in coin return")
@@ -82,7 +94,7 @@ class VendingMachineTest {
 
     @test
     fun `when insufficient money deposited and a product selected display price then display accepted amount`() {
-        machine.buy(Cola())
+        machine.buy(ProductImpl.Cola)
         assertEquals("PRICE: $1.00", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
     }
@@ -120,6 +132,31 @@ class VendingMachineTest {
         machine.accept(Dime())
         machine.accept(Nickel())
         assertTrue(compareCoinLists(listOf(Quarter()), machine.coinReturn()), "Incorrect coin return")
+    }
+
+    @test
+    fun `can not sell an item that is out of stock`() {
+        val machine = VendingMachine(mapOf(ProductImpl.Candy to 0))
+        machine.accept(Quarter())
+        machine.accept(Quarter())
+        machine.accept(Dime())
+        machine.accept(Nickel())
+        machine.buy(ProductImpl.Candy)
+        assertEquals("SOLD OUT", machine.display(), "Incorrect message when product out of stock")
+        assertEquals("$0.65", machine.display(), "Wrong message displayed")
+    }
+
+    @test
+    fun `can sell product until it is depleted but no more`() {
+        val machine = VendingMachine(mapOf(ProductImpl.Chips to 1))
+        machine.accept(Quarter())
+        machine.accept(Quarter())
+        machine.buy(ProductImpl.Chips)
+        machine.accept(Quarter())
+        machine.accept(Quarter())
+        machine.buy(ProductImpl.Chips)
+        assertEquals("SOLD OUT", machine.display(), "Incorrect message when product out of stock")
+        assertEquals("$0.50", machine.display(), "Wrong message displayed")
     }
 
     fun compareCoinLists(l1: List<Coin>, l2: List<Coin>) =
