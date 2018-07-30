@@ -10,6 +10,18 @@ interface Coin {
     val mass: Int
     val edge: String
     val monetaryValue: Int
+
+    companion object {
+        fun copy(c: Coin): Coin {
+            return object : Coin {
+                override val diameter = c.diameter
+                override val thickness = c.thickness
+                override val mass = c.mass
+                override val edge = c.edge
+                override val monetaryValue = c.monetaryValue
+            }
+        }
+    }
 }
 
 class Dollar : Coin {

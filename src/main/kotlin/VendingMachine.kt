@@ -3,7 +3,7 @@ package org.jtodd.kvend.vend
 class VendingMachine(stock: Map<Product, Int>) {
 
     init {
-        if (stock.any { (k, v) -> v < 0 }) {
+        if (stock.values.any { it < 0 }) {
             throw IllegalArgumentException("No product can have a negative stock")
         }
     }
@@ -23,12 +23,6 @@ class VendingMachine(stock: Map<Product, Int>) {
         } else {
             return formatValue(_acceptedValue)
         }
-    }
-
-    fun formatValue(acceptedValue: Int): String {
-        val dollars = acceptedValue / 100
-        val cents = acceptedValue % 100
-        return "\$$dollars.${"%02d".format(cents)}"
     }
 
     fun accept(coin: Coin) {
@@ -67,22 +61,30 @@ class VendingMachine(stock: Map<Product, Int>) {
     fun makeChange(amount: Int): List<Coin> {
         val returnList = mutableListOf<Coin>()
         var _amount = amount
-        while (_amount >= Quarter.monetaryValue) {
-            returnList.add(Quarter())
-            _amount -= Quarter.monetaryValue
+
+        fun makeChangeForCoin(amount: Int, coin: Coin, list: MutableList<Coin>): Int {
+            var __amount = amount
+            while (__amount >= coin.monetaryValue) {
+                list.add(Coin.copy(coin))
+                __amount -= coin.monetaryValue
+            }
+            return __amount
         }
-        while (_amount >= Dime.monetaryValue) {
-            returnList.add(Dime())
-            _amount -= Dime.monetaryValue
+
+        for (c in listOf(Quarter, Dime, Nickel)) {
+            _amount = makeChangeForCoin(_amount, c, returnList)
         }
-        while (_amount >= Nickel.monetaryValue) {
-            returnList.add(Nickel())
-            _amount -= Nickel.monetaryValue
-        }
+
         return returnList.toList()
     }
 
     companion object {
+        fun formatValue(acceptedValue: Int): String {
+            val dollars = acceptedValue / 100
+            val cents = acceptedValue % 100
+            return "\$$dollars.${"%02d".format(cents)}"
+        }
+
         fun matchCoins(c1: Coin, c2: Coin): Boolean {
             return c1.diameter  == c2.diameter &&
                    c1.thickness == c2.thickness &&

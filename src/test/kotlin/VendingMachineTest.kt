@@ -35,8 +35,8 @@ class VendingMachineTest {
 
     @test
     fun `display amounts correctly`() {
-        assertEquals("$0.15", machine.formatValue(15), "Wrong format")
-        assertEquals("$1.00", machine.formatValue(100), "Wrong format")
+        assertEquals("$0.15", VendingMachine.formatValue(15), "Wrong format")
+        assertEquals("$1.00", VendingMachine.formatValue(100), "Wrong format")
     }
 
     @test
