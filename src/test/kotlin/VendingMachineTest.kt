@@ -70,13 +70,14 @@ class VendingMachineTest {
     }
 
     @test
-    fun `when more than enough money deposited and product selected display message and set value to zero`() {
+    fun `when more than enough money deposited and product selected display message set value to zero and make change`() {
         machine.accept(Quarter())
         machine.accept(Quarter())
         machine.accept(Nickel())
         machine.buy(Chips())
         assertEquals("THANK YOU", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
+        assertTrue(listOf(Nickel()).zip(machine.coinReturn()).all { (c1: Coin, c2: Coin) -> VendingMachine.matchCoins(c1, c2) }, "Extra money not returned in coin return")
     }
 
     @test

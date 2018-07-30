@@ -41,12 +41,31 @@ class VendingMachine {
         if (product.price > _acceptedValue) {
             setDisplayWithLifetime("PRICE: ${formatValue(product.price)}", 1)
         } else {
+            _coinReturn.addAll(makeChange(_acceptedValue - product.price))
             _acceptedValue = 0
             setDisplayWithLifetime("THANK YOU", 1)
         }
     }
 
     fun coinReturn() = _coinReturn.toList()
+
+    fun makeChange(amount: Int): List<Coin> {
+        val returnList = mutableListOf<Coin>()
+        var _amount = amount
+        while (_amount >= Quarter.monetaryValue) {
+            returnList.add(Quarter())
+            _amount -= Quarter.monetaryValue
+        }
+        while (_amount >= Dime.monetaryValue) {
+            returnList.add(Dime())
+            _amount -= Dime.monetaryValue
+        }
+        while (_amount >= Nickel.monetaryValue) {
+            returnList.add(Nickel())
+            _amount -= Nickel.monetaryValue
+        }
+        return returnList.toList()
+    }
 
     companion object {
         fun matchCoins(c1: Coin, c2: Coin): Boolean {
