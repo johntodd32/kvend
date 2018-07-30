@@ -4,13 +4,24 @@ class VendingMachine {
 
     private var _acceptedValue = 0
     private val _coinReturn = mutableListOf<Coin>()
+    private var _tempMessage = ""
+    private var _lifetime = 0
 
-    fun display(): String = if (_acceptedValue == 0) "INSERT COIN" else formatValue(_acceptedValue)
+    fun display(): String {
+        if (_lifetime > 0) {
+            --_lifetime
+            return _tempMessage
+        } else if (_acceptedValue == 0) {
+            return "INSERT COIN"
+        } else {
+            return formatValue(_acceptedValue)
+        }
+    }
 
     fun formatValue(acceptedValue: Int): String {
         val dollars = acceptedValue / 100
         val cents = acceptedValue % 100
-        return "\$$dollars.$cents"
+        return "\$$dollars.${"%02d".format(cents)}"
     }
 
     fun accept(coin: Coin) {
@@ -18,6 +29,20 @@ class VendingMachine {
             _acceptedValue += coin.monetaryValue
         } else {
             _coinReturn.add(coin)
+        }
+    }
+
+    fun setDisplayWithLifetime(message: String, lifetime: Int) {
+        _tempMessage = message
+        _lifetime = lifetime
+    }
+
+    fun buy(product: Product) {
+        if (product.price > _acceptedValue) {
+            setDisplayWithLifetime("PRICE: ${formatValue(product.price)}", 1)
+        } else {
+            _acceptedValue = 0
+            setDisplayWithLifetime("THANK YOU", 1)
         }
     }
 
