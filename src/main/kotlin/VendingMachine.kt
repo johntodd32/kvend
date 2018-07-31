@@ -24,6 +24,8 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
         if (_lifetime > 0) {
             --_lifetime
             return _tempMessage
+        } else if (!canMakeChange()) {
+            return "EXACT CHANGE ONLY"
         } else if (_acceptedValue == 0) {
             return "INSERT COIN"
         } else {
@@ -64,6 +66,9 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
         _coinReturn.addAll(acceptedCoinList)
         acceptedCoinList.clear()
     }
+
+    fun canMakeChange() =
+            listOf(CoinImpl.Quarter, CoinImpl.Dime, CoinImpl.Nickel).map { _bank.getOrDefault(it, 0) }.none { it < 1 }
 
     fun makeChange(amount: Int): List<Coin> {
         val returnList = mutableListOf<Coin>()

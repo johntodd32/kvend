@@ -166,6 +166,22 @@ class VendingMachineTest {
         assertEquals("$0.50", machine.display(), "Wrong message displayed")
     }
 
+    @test
+    fun `displays different message if it cannot make change`() {
+        val machine = VendingMachine(defaultStock, mapOf(CoinImpl.Quarter to 10, CoinImpl.Dime to 10, CoinImpl.Nickel to 0))
+        assertEquals("EXACT CHANGE ONLY", machine.display())
+    }
+
+    @test
+    fun `detect if any coin is depleted in bank`() {
+        val vm1 = VendingMachine(defaultStock, mapOf(CoinImpl.Quarter to 10, CoinImpl.Dime to 10, CoinImpl.Nickel to 0))
+        assertFalse(vm1.canMakeChange(), "Machine with no nickels is not able to make change")
+        val vm2 = VendingMachine(defaultStock, mapOf(CoinImpl.Quarter to 10))
+        assertFalse(vm2.canMakeChange(), "Machine with no dimes or nickels is not able to make change")
+        val vm3 = VendingMachine(defaultStock, mapOf(CoinImpl.Quarter to 1, CoinImpl.Dime to 1, CoinImpl.Nickel to 1))
+        assertTrue(vm3.canMakeChange(), "Machine with quarters, dimes, and nickels can make change")
+    }
+
     fun compareCoinLists(l1: List<Coin>, l2: List<Coin>) =
             l1.zip(l2).all { (c1, c2) -> VendingMachine.matchCoins(c1, c2) }
 }
