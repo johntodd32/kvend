@@ -21,7 +21,7 @@ class VendingMachineTest {
 
     @test
     fun `when created display shows a message`() {
-        assertEquals("INSERT COIN", machine.display())
+        assertEquals(VendingMachine.INSERT_COIN, machine.display())
     }
 
     @test
@@ -84,8 +84,8 @@ class VendingMachineTest {
         machine.accept(CoinImpl.Quarter)
         machine.accept(CoinImpl.Quarter)
         machine.buy(ProductImpl.Chips)
-        assertEquals("THANK YOU", machine.display(), "Error on purchase")
-        assertEquals("INSERT COIN", machine.display(), "Error on display reset")
+        assertEquals(VendingMachine.THANK_YOU, machine.display(), "Error on purchase")
+        assertEquals(VendingMachine.INSERT_COIN, machine.display(), "Error on display reset")
     }
 
     @test
@@ -94,8 +94,8 @@ class VendingMachineTest {
         machine.accept(CoinImpl.Quarter)
         machine.accept(CoinImpl.Nickel)
         machine.buy(ProductImpl.Chips)
-        assertEquals("THANK YOU", machine.display(), "Error on purchase")
-        assertEquals("INSERT COIN", machine.display(), "Error on display reset")
+        assertEquals(VendingMachine.THANK_YOU, machine.display(), "Error on purchase")
+        assertEquals(VendingMachine.INSERT_COIN, machine.display(), "Error on display reset")
         assertTrue(compareCoinLists(listOf(CoinImpl.Nickel), machine.coinReturn()), "Extra money not returned in coin return")
     }
 
@@ -103,7 +103,7 @@ class VendingMachineTest {
     fun `when insufficient money deposited and a product selected display price then display accepted amount`() {
         machine.buy(ProductImpl.Cola)
         assertEquals("PRICE: $1.00", machine.display(), "Error on purchase")
-        assertEquals("INSERT COIN", machine.display(), "Error on display reset")
+        assertEquals(VendingMachine.INSERT_COIN, machine.display(), "Error on display reset")
     }
 
     @test
@@ -115,14 +115,14 @@ class VendingMachineTest {
         for (i in 1 .. testCount) {
             assertEquals(testMessage, machine.display(), "Wrong test message")
         }
-        assertEquals("INSERT COIN", machine.display(), "Error on display reset")
+        assertEquals(VendingMachine.INSERT_COIN, machine.display(), "Error on display reset")
     }
 
     @test
     fun `when no money deposited coin return does nothing`() {
         machine.cancel()
         assertEquals(listOf(), machine.coinReturn(), "Incorrect coin return")
-        assertEquals("INSERT COIN", machine.display(), "Wrong message displayed")
+        assertEquals(VendingMachine.INSERT_COIN, machine.display(), "Wrong message displayed")
     }
 
     @test
@@ -130,7 +130,7 @@ class VendingMachineTest {
         machine.accept(CoinImpl.Dime)
         machine.cancel()
         assertTrue(compareCoinLists(listOf(CoinImpl.Dime), machine.coinReturn()), "Incorrect coin return")
-        assertEquals("INSERT COIN", machine.display(), "Wrong message displayed")
+        assertEquals(VendingMachine.INSERT_COIN, machine.display(), "Wrong message displayed")
     }
 
     @test
@@ -149,7 +149,7 @@ class VendingMachineTest {
         machine.accept(CoinImpl.Dime)
         machine.accept(CoinImpl.Nickel)
         machine.buy(ProductImpl.Candy)
-        assertEquals("SOLD OUT", machine.display(), "Incorrect message when product out of stock")
+        assertEquals(VendingMachine.SOLD_OUT, machine.display(), "Incorrect message when product out of stock")
         assertEquals("$0.65", machine.display(), "Wrong message displayed")
     }
 
@@ -162,14 +162,14 @@ class VendingMachineTest {
         machine.accept(CoinImpl.Quarter)
         machine.accept(CoinImpl.Quarter)
         machine.buy(ProductImpl.Chips)
-        assertEquals("SOLD OUT", machine.display(), "Incorrect message when product out of stock")
+        assertEquals(VendingMachine.SOLD_OUT, machine.display(), "Incorrect message when product out of stock")
         assertEquals("$0.50", machine.display(), "Wrong message displayed")
     }
 
     @test
     fun `displays different message if it cannot make change`() {
         val machine = VendingMachine(defaultStock, mapOf(CoinImpl.Quarter to 10, CoinImpl.Dime to 10, CoinImpl.Nickel to 0))
-        assertEquals("EXACT CHANGE ONLY", machine.display())
+        assertEquals(VendingMachine.EXACT_CHANGE_ONLY, machine.display())
     }
 
     @test

@@ -25,9 +25,9 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
             --_lifetime
             return _tempMessage
         } else if (!canMakeChange()) {
-            return "EXACT CHANGE ONLY"
+            return EXACT_CHANGE_ONLY
         } else if (_acceptedValue == 0) {
-            return "INSERT COIN"
+            return INSERT_COIN
         } else {
             return formatValue(_acceptedValue)
         }
@@ -48,15 +48,15 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
 
     fun buy(product: Product) {
         if (product.price > _acceptedValue) {
-            setDisplayWithLifetime("PRICE: ${formatValue(product.price)}", 1)
+            setDisplayWithLifetime(formatPrice(product.price), 1)
         } else if (!_stock.containsKey(product) || _stock[product]!! < 1) {
-            setDisplayWithLifetime("SOLD OUT", 1)
+            setDisplayWithLifetime(SOLD_OUT, 1)
         } else {
             acceptedCoinList.forEach { it -> _bank[it] = _bank[it]!! + 1 }
             acceptedCoinList.clear()
             _coinReturn.addAll(makeChange(_acceptedValue - product.price))
             _stock[product] = _stock[product]!! - 1
-            setDisplayWithLifetime("THANK YOU", 1)
+            setDisplayWithLifetime(THANK_YOU, 1)
         }
     }
 
@@ -92,6 +92,14 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     }
 
     companion object {
+        val INSERT_COIN = "INSERT COIN"
+        val EXACT_CHANGE_ONLY = "EXACT CHANGE ONLY"
+        val SOLD_OUT = "SOLD OUT"
+        val THANK_YOU = "THANK YOU"
+        val PRICE = "PRICE"
+
+        fun formatPrice(price: Int): String = "$PRICE: ${formatValue(price)}"
+
         fun formatValue(acceptedValue: Int): String {
             val dollars = acceptedValue / 100
             val cents = acceptedValue % 100
