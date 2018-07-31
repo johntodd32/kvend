@@ -29,9 +29,15 @@ class VendingMachineTest {
         try {
             VendingMachine(mapOf(ProductImpl.Cola to 1, ProductImpl.Candy to -1), defaultBank)
             fail("Can not create vending machine with negative stock")
-        } catch (e: IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {}
+    }
 
-        }
+    @test
+    fun `cannot be initiated with negative count for a coin`() {
+        try {
+            VendingMachine(defaultStock, mapOf(Quarter to 1, Dime to -1))
+            fail("Can not create vending machine with negative bank")
+        } catch (e: IllegalArgumentException) {}
     }
 
     @test

@@ -6,6 +6,9 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
         if (stock.values.any { it < 0 }) {
             throw IllegalArgumentException("No product can have a negative stock")
         }
+        if (bank.values.any { it < 0 }) {
+            throw IllegalArgumentException("No coin in the bank can have a negative count")
+        }
     }
 
     private val _stock = stock.toMutableMap()
