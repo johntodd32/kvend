@@ -7,7 +7,7 @@ import java.util.Scanner
 class Driver(input: InputStream, private val output: PrintStream) {
 
     private val scanner = Scanner(input)
-    private val stock: Map<Product, Int> = mapOf(ProductImpl.Cola to 10, ProductImpl.Chips to 10, ProductImpl.Candy to 10)
+    private val stock: Map<Product, Int> = mapOf(Product.Cola to 10, Product.Chips to 10, Product.Candy to 10)
     private val bank: Map<Coin, Int> = mapOf(CoinImpl.Quarter to 10, CoinImpl.Dime to 10, CoinImpl.Nickel to 10)
     private val machine = VendingMachine(stock, bank)
 
@@ -19,6 +19,14 @@ class Driver(input: InputStream, private val output: PrintStream) {
         while (command != 'X') {
             when (command) {
                 'D' -> output.println(machine.display())
+                'S' -> {
+                    when(argument) {
+                        "1" -> machine.buy(Product.Chips)
+                        "2" -> machine.buy(Product.Candy)
+                        "3" -> machine.buy(Product.Cola)
+                        else -> output.println("Unrecognized product")
+                    }
+                }
                 else -> {
                     output.println("Unrecognized command")
                 }

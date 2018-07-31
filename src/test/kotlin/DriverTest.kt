@@ -56,4 +56,13 @@ class DriverTest {
 
         assertTrue(baos.toString().contains(VendingMachine.INSERT_COIN), "Machine should return display when requested")
     }
+
+    @test
+    fun `can buy product`() {
+        val input = "S1${ls}D${ls}X".byteInputStream()
+
+        Driver(input, output).run()
+
+        assertTrue(baos.toString().contains(VendingMachine.formatPrice(Product.Chips.price)), "Machine should respond to purchases")
+    }
 }

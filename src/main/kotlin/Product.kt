@@ -1,11 +1,7 @@
 package org.jtodd.kvend.vend
 
-interface Product {
-    val price: Int
-}
-
-enum class ProductImpl : Product {
-    Cola{ override val price = 100 },
-    Chips{ override val price = 50 },
-    Candy{ override val price = 65 }
+enum class Product(val price: Int) {
+    Cola(100),
+    Chips(50),
+    Candy(65),
 }
