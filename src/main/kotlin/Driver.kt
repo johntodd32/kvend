@@ -21,13 +21,13 @@ class Driver(input: InputStream, private val output: PrintStream) {
                 'D' -> output.println(machine.display())
                 'I' -> {
                     when {
-                        argument == "p" -> machine.accept(CoinImpl.Penny)
-                        argument == "n" -> machine.accept(CoinImpl.Nickel)
-                        argument == "d" -> machine.accept(CoinImpl.Dime)
-                        argument == "q" -> machine.accept(CoinImpl.Quarter)
-                        argument == "h" -> machine.accept(CoinImpl.HalfDollar)
-                        argument == "l" -> machine.accept(CoinImpl.Dollar)
-                        argument.startsWith("s") -> {
+                        argument == "P" -> machine.accept(CoinImpl.Penny)
+                        argument == "N" -> machine.accept(CoinImpl.Nickel)
+                        argument == "D" -> machine.accept(CoinImpl.Dime)
+                        argument == "Q" -> machine.accept(CoinImpl.Quarter)
+                        argument == "H" -> machine.accept(CoinImpl.HalfDollar)
+                        argument == "L" -> machine.accept(CoinImpl.Dollar)
+                        argument.startsWith("S") -> {
                             val (diameter, mass) = argument.substring(1).split(",")
                             machine.accept(Slug((diameter.toFloat() * 10000).toInt(), (mass.toFloat() * 10000).toInt()))
                         }
@@ -65,9 +65,9 @@ class Driver(input: InputStream, private val output: PrintStream) {
     }
 
     private fun getOption(scanner: Scanner): Pair<Char, String> {
-        val choice: String = scanner.nextLine()
-        val option: Char = choice[0].toUpperCase()
-        val arg: String = choice.substring(1).toLowerCase()
+        val choice: String = scanner.nextLine().toUpperCase()
+        val option: Char = choice[0]
+        val arg: String = choice.substring(1)
         return option to arg
     }
 }
