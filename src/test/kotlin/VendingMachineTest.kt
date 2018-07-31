@@ -11,7 +11,7 @@ import kotlin.test.fail
 class VendingMachineTest {
 
     val defaultStock: Map<Product, Int> = mapOf(ProductImpl.Cola to 10, ProductImpl.Chips to 10, ProductImpl.Candy to 10)
-    val defaultBank: Map<Coin, Int> = mapOf(Quarter to 10, Dime to 10, Nickel to 10)
+    val defaultBank: Map<Coin, Int> = mapOf(CoinImpl.Quarter to 10, CoinImpl.Dime to 10, CoinImpl.Nickel to 10)
     lateinit var machine: VendingMachine
 
     @Before
@@ -35,7 +35,7 @@ class VendingMachineTest {
     @test
     fun `cannot be initiated with negative count for a coin`() {
         try {
-            VendingMachine(defaultStock, mapOf(Quarter to 1, Dime to -1))
+            VendingMachine(defaultStock, mapOf(CoinImpl.Quarter to 1, CoinImpl.Dime to -1))
             fail("Can not create vending machine with negative bank")
         } catch (e: IllegalArgumentException) {}
     }
@@ -48,8 +48,8 @@ class VendingMachineTest {
 
     @test
     fun `can accept coins and update the display`() {
-        val d = Dime()
-        val n = Nickel()
+        val d = CoinImpl.Dime
+        val n = CoinImpl.Nickel
         machine.accept(d)
         machine.accept(n)
         assertEquals("$0.15", machine.display())
@@ -57,11 +57,11 @@ class VendingMachineTest {
 
     @test
     fun `only nickels, dimes, and quarters are valid inputs`() {
-        val p = Penny()
+        val p = CoinImpl.Penny
         val s = Slug(1, 1, 1, "rough")
-        machine.accept(Dime())
-        machine.accept(Nickel())
-        machine.accept(Quarter())
+        machine.accept(CoinImpl.Dime)
+        machine.accept(CoinImpl.Nickel)
+        machine.accept(CoinImpl.Quarter)
         machine.accept(p)
         machine.accept(s)
         assertEquals("$0.40", machine.display())
@@ -70,19 +70,19 @@ class VendingMachineTest {
 
     @test
     fun `test matchCoins`() {
-        val q1: Coin = Quarter()
-        val n: Coin = Nickel()
+        val q1: Coin = CoinImpl.Quarter
+        val n: Coin = CoinImpl.Nickel
         val s: Coin = Slug(2121, 195, 5000, "Plain")
-        assertTrue(VendingMachine.matchCoins(q1, Quarter))
-        assertFalse(VendingMachine.matchCoins(Quarter, n))
+        assertTrue(VendingMachine.matchCoins(q1, CoinImpl.Quarter))
+        assertFalse(VendingMachine.matchCoins(CoinImpl.Quarter, n))
         assertFalse(VendingMachine.matchCoins(q1, s))
         assertTrue(VendingMachine.matchCoins(s, n))
     }
 
     @test
     fun `when enough money deposited and product selected display message and update accepted value`() {
-        machine.accept(Quarter())
-        machine.accept(Quarter())
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Quarter)
         machine.buy(ProductImpl.Chips)
         assertEquals("THANK YOU", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
@@ -90,13 +90,13 @@ class VendingMachineTest {
 
     @test
     fun `when more than enough money deposited and product selected display message set value to zero and make change`() {
-        machine.accept(Quarter())
-        machine.accept(Quarter())
-        machine.accept(Nickel())
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Nickel)
         machine.buy(ProductImpl.Chips)
         assertEquals("THANK YOU", machine.display(), "Error on purchase")
         assertEquals("INSERT COIN", machine.display(), "Error on display reset")
-        assertTrue(compareCoinLists(listOf(Nickel()), machine.coinReturn()), "Extra money not returned in coin return")
+        assertTrue(compareCoinLists(listOf(CoinImpl.Nickel), machine.coinReturn()), "Extra money not returned in coin return")
     }
 
     @test
@@ -127,27 +127,27 @@ class VendingMachineTest {
 
     @test
     fun `coin return returns all money deposited`() {
-        machine.accept(Dime())
+        machine.accept(CoinImpl.Dime)
         machine.cancel()
-        assertTrue(compareCoinLists(listOf(Dime()), machine.coinReturn()), "Incorrect coin return")
+        assertTrue(compareCoinLists(listOf(CoinImpl.Dime), machine.coinReturn()), "Incorrect coin return")
         assertEquals("INSERT COIN", machine.display(), "Wrong message displayed")
     }
 
     @test
     fun `vending machine makes optimal return list when cancel is pushed`() {
-        machine.accept(Dime())
-        machine.accept(Dime())
-        machine.accept(Nickel())
-        assertTrue(compareCoinLists(listOf(Quarter()), machine.coinReturn()), "Incorrect coin return")
+        machine.accept(CoinImpl.Dime)
+        machine.accept(CoinImpl.Dime)
+        machine.accept(CoinImpl.Nickel)
+        assertTrue(compareCoinLists(listOf(CoinImpl.Quarter), machine.coinReturn()), "Incorrect coin return")
     }
 
     @test
     fun `can not sell an item that is out of stock`() {
         val machine = VendingMachine(mapOf(ProductImpl.Candy to 0), defaultBank)
-        machine.accept(Quarter())
-        machine.accept(Quarter())
-        machine.accept(Dime())
-        machine.accept(Nickel())
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Dime)
+        machine.accept(CoinImpl.Nickel)
         machine.buy(ProductImpl.Candy)
         assertEquals("SOLD OUT", machine.display(), "Incorrect message when product out of stock")
         assertEquals("$0.65", machine.display(), "Wrong message displayed")
@@ -156,11 +156,11 @@ class VendingMachineTest {
     @test
     fun `can sell product until it is depleted but no more`() {
         val machine = VendingMachine(mapOf(ProductImpl.Chips to 1), defaultBank)
-        machine.accept(Quarter())
-        machine.accept(Quarter())
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Quarter)
         machine.buy(ProductImpl.Chips)
-        machine.accept(Quarter())
-        machine.accept(Quarter())
+        machine.accept(CoinImpl.Quarter)
+        machine.accept(CoinImpl.Quarter)
         machine.buy(ProductImpl.Chips)
         assertEquals("SOLD OUT", machine.display(), "Incorrect message when product out of stock")
         assertEquals("$0.50", machine.display(), "Wrong message displayed")

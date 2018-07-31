@@ -13,7 +13,9 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
 
     private val _stock = stock.toMutableMap()
     private val _bank = bank.toMutableMap()
-    private var _acceptedValue = 0
+    private val acceptedCoinList = mutableListOf<Coin>()
+    private val _acceptedValue
+        get() = acceptedCoinList.map { it -> it.monetaryValue }.sum()
     private val _coinReturn = mutableListOf<Coin>()
     private var _tempMessage = ""
     private var _lifetime = 0
@@ -30,8 +32,8 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     }
 
     fun accept(coin: Coin) {
-        if (matchCoins(coin, Nickel) || matchCoins(coin, Dime) || matchCoins(coin, Quarter)) {
-            _acceptedValue += coin.monetaryValue
+        if (matchCoins(coin, CoinImpl.Nickel) || matchCoins(coin, CoinImpl.Dime) || matchCoins(coin, CoinImpl.Quarter)) {
+            acceptedCoinList.add(coin)
         } else {
             _coinReturn.add(coin)
         }
@@ -48,8 +50,9 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
         } else if (!_stock.containsKey(product) || _stock[product]!! < 1) {
             setDisplayWithLifetime("SOLD OUT", 1)
         } else {
+            acceptedCoinList.forEach { it -> _bank[it] = _bank[it]!! + 1 }
+            acceptedCoinList.clear()
             _coinReturn.addAll(makeChange(_acceptedValue - product.price))
-            _acceptedValue = 0
             _stock[product] = _stock[product]!! - 1
             setDisplayWithLifetime("THANK YOU", 1)
         }
@@ -58,8 +61,8 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     fun coinReturn() = _coinReturn.toList()
 
     fun cancel() {
-        _coinReturn.addAll(makeChange(_acceptedValue))
-        _acceptedValue = 0
+        _coinReturn.addAll(acceptedCoinList)
+        acceptedCoinList.clear()
     }
 
     fun makeChange(amount: Int): List<Coin> {
@@ -69,13 +72,14 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
         fun makeChangeForCoin(amount: Int, coin: Coin, list: MutableList<Coin>): Int {
             var __amount = amount
             while (__amount >= coin.monetaryValue) {
-                list.add(Coin.copy(coin))
+                list.add(coin)
+                _bank[coin] = _bank[coin]!! - 1
                 __amount -= coin.monetaryValue
             }
             return __amount
         }
 
-        for (c in listOf(Quarter, Dime, Nickel)) {
+        for (c in listOf(CoinImpl.Quarter, CoinImpl.Dime, CoinImpl.Nickel)) {
             _amount = makeChangeForCoin(_amount, c, returnList)
         }
 
