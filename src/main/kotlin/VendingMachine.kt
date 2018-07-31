@@ -108,9 +108,7 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
 
         fun matchCoins(c1: Coin, c2: Coin): Boolean {
             return c1.diameter  == c2.diameter &&
-                   c1.thickness == c2.thickness &&
-                   c1.mass      == c2.mass &&
-                   c1.edge      == c2.edge
+                   c1.mass      == c2.mass
         }
     }
 }

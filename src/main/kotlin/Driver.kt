@@ -19,6 +19,21 @@ class Driver(input: InputStream, private val output: PrintStream) {
         while (command != 'X') {
             when (command) {
                 'D' -> output.println(machine.display())
+                'I' -> {
+                    when {
+                        argument == "p" -> machine.accept(CoinImpl.Penny)
+                        argument == "n" -> machine.accept(CoinImpl.Nickel)
+                        argument == "d" -> machine.accept(CoinImpl.Dime)
+                        argument == "q" -> machine.accept(CoinImpl.Quarter)
+                        argument == "h" -> machine.accept(CoinImpl.HalfDollar)
+                        argument == "l" -> machine.accept(CoinImpl.Dollar)
+                        argument.startsWith("s") -> {
+                            val (diameter, mass) = argument.substring(1).split(",")
+                            machine.accept(Slug((diameter.toFloat() * 10000).toInt(), (mass.toFloat() * 10000).toInt()))
+                        }
+                        else -> output.println("Unrecognized coin")
+                    }
+                }
                 'S' -> {
                     when(argument) {
                         "1" -> machine.buy(Product.Chips)
@@ -40,7 +55,7 @@ class Driver(input: InputStream, private val output: PrintStream) {
 
     private fun displayOptions(output: PrintStream) {
         output.println("D: Check display")
-        output.println("I[PNDQHD(S%.4f,%.4f)]: Insert (penny, nickel, dollar, quarter, half-dollar, dollar, slug(diameter, mass)")
+        output.println("I[PNDQHL(S%.4f,%.4f)]: Insert (penny, nickel, dollar, quarter, half-dollar, dollar, slug(diameter, mass)")
         output.println("S[123]: Select (1 = chips, 2 = candy, 3 = soda")
         output.println("C: Cancel purchase")
         output.println("R: Check for change")

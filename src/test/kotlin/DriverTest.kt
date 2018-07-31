@@ -13,7 +13,7 @@ class DriverTest {
 
     val ls = System.getProperty("line.separator")
     val expectedSplash = """D: Check display
-                           |I[PNDQHD(S%.4f,%.4f)]: Insert (penny, nickel, dollar, quarter, half-dollar, dollar, slug(diameter, mass)
+                           |I[PNDQHL(S%.4f,%.4f)]: Insert (penny, nickel, dollar, quarter, half-dollar, dollar, slug(diameter, mass)
                            |S[123]: Select (1 = chips, 2 = candy, 3 = soda
                            |C: Cancel purchase
                            |R: Check for change
@@ -64,5 +64,14 @@ class DriverTest {
         Driver(input, output).run()
 
         assertTrue(baos.toString().contains(VendingMachine.formatPrice(Product.Chips.price)), "Machine should respond to purchases")
+    }
+
+    @test
+    fun `can insert coins`() {
+        val input = "IQ${ls}ID${ls}D${ls}X".byteInputStream()
+
+        Driver(input, output).run()
+
+        assertTrue(baos.toString().contains("$0.35"), "Machine should accept coins")
     }
 }

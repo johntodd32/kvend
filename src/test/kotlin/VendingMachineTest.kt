@@ -58,7 +58,7 @@ class VendingMachineTest {
     @test
     fun `only nickels, dimes, and quarters are valid inputs`() {
         val p = CoinImpl.Penny
-        val s = Slug(1, 1, 1, "rough")
+        val s = Slug(1, 1)
         machine.accept(CoinImpl.Dime)
         machine.accept(CoinImpl.Nickel)
         machine.accept(CoinImpl.Quarter)
@@ -72,7 +72,7 @@ class VendingMachineTest {
     fun `test matchCoins`() {
         val q1: Coin = CoinImpl.Quarter
         val n: Coin = CoinImpl.Nickel
-        val s: Coin = Slug(2121, 195, 5000, "Plain")
+        val s: Coin = Slug(2121, 5000)
         assertTrue(VendingMachine.matchCoins(q1, CoinImpl.Quarter))
         assertFalse(VendingMachine.matchCoins(CoinImpl.Quarter, n))
         assertFalse(VendingMachine.matchCoins(q1, s))
