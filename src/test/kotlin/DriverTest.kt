@@ -16,8 +16,6 @@ class DriverTest {
                            |I[PNDQHL(S%.4f,%.4f)]: Insert (penny, nickel, dollar, quarter, half-dollar, dollar, slug(diameter, mass)
                            |S[123]: Select (1 = chips, 2 = candy, 3 = soda
                            |C: Cancel purchase
-                           |R: Check for change
-                           |P: Check for product
                            |X: Exit
                            |
                            |Choice: """.trimMargin("|")
@@ -73,5 +71,15 @@ class DriverTest {
         Driver(input, output).run()
 
         assertTrue(baos.toString().contains("$0.35"), "Machine should accept coins")
+    }
+
+    @test
+    fun `can cancel a purchase`() {
+        val input = "IQ${ls}D${ls}C${ls}D${ls}X".byteInputStream()
+
+        Driver(input, output).run()
+
+        assertTrue(baos.toString().contains("$0.25"), "Machine should accept coins")
+        assertTrue(baos.toString().contains(VendingMachine.INSERT_COIN), "Cancel should reset display")
     }
 }

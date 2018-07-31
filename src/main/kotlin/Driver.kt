@@ -42,6 +42,7 @@ class Driver(input: InputStream, private val output: PrintStream) {
                         else -> output.println("Unrecognized product")
                     }
                 }
+                'C' -> machine.cancel()
                 else -> {
                     output.println("Unrecognized command")
                 }
@@ -58,8 +59,6 @@ class Driver(input: InputStream, private val output: PrintStream) {
         output.println("I[PNDQHL(S%.4f,%.4f)]: Insert (penny, nickel, dollar, quarter, half-dollar, dollar, slug(diameter, mass)")
         output.println("S[123]: Select (1 = chips, 2 = candy, 3 = soda")
         output.println("C: Cancel purchase")
-        output.println("R: Check for change")
-        output.println("P: Check for product")
         output.println("X: Exit")
         output.println()
         output.print("Choice: ")
