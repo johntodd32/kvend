@@ -11,11 +11,12 @@ import kotlin.test.fail
 class VendingMachineTest {
 
     val defaultStock: Map<Product, Int> = mapOf(ProductImpl.Cola to 10, ProductImpl.Chips to 10, ProductImpl.Candy to 10)
+    val defaultBank: Map<Coin, Int> = mapOf(Quarter to 10, Dime to 10, Nickel to 10)
     lateinit var machine: VendingMachine
 
     @Before
     fun setUp() {
-        machine = VendingMachine(defaultStock)
+        machine = VendingMachine(defaultStock, defaultBank)
     }
 
     @test
@@ -26,7 +27,7 @@ class VendingMachineTest {
     @test
     fun `cannot be initiated with negative stock for a product`() {
         try {
-            VendingMachine(mapOf(ProductImpl.Cola to 1, ProductImpl.Candy to -1))
+            VendingMachine(mapOf(ProductImpl.Cola to 1, ProductImpl.Candy to -1), defaultBank)
             fail("Can not create vending machine with negative stock")
         } catch (e: IllegalArgumentException) {
 
@@ -136,7 +137,7 @@ class VendingMachineTest {
 
     @test
     fun `can not sell an item that is out of stock`() {
-        val machine = VendingMachine(mapOf(ProductImpl.Candy to 0))
+        val machine = VendingMachine(mapOf(ProductImpl.Candy to 0), defaultBank)
         machine.accept(Quarter())
         machine.accept(Quarter())
         machine.accept(Dime())
@@ -148,7 +149,7 @@ class VendingMachineTest {
 
     @test
     fun `can sell product until it is depleted but no more`() {
-        val machine = VendingMachine(mapOf(ProductImpl.Chips to 1))
+        val machine = VendingMachine(mapOf(ProductImpl.Chips to 1), defaultBank)
         machine.accept(Quarter())
         machine.accept(Quarter())
         machine.buy(ProductImpl.Chips)

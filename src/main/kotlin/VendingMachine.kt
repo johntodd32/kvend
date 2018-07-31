@@ -1,6 +1,6 @@
 package org.jtodd.kvend.vend
 
-class VendingMachine(stock: Map<Product, Int>) {
+class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
 
     init {
         if (stock.values.any { it < 0 }) {
@@ -9,6 +9,7 @@ class VendingMachine(stock: Map<Product, Int>) {
     }
 
     private val _stock = stock.toMutableMap()
+    private val _bank = bank.toMutableMap()
     private var _acceptedValue = 0
     private val _coinReturn = mutableListOf<Coin>()
     private var _tempMessage = ""
