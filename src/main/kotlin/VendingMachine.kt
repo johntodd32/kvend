@@ -34,7 +34,7 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     }
 
     fun accept(coin: Coin) {
-        if (matchCoins(coin, CoinImpl.Nickel) || matchCoins(coin, CoinImpl.Dime) || matchCoins(coin, CoinImpl.Quarter)) {
+        if (acceptableCoins.any { matchCoins(coin, it) } ) {
             acceptedCoinList.add(coin)
         } else {
             _coinReturn.add(coin)
@@ -68,7 +68,7 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     }
 
     fun canMakeChange() =
-            listOf(CoinImpl.Quarter, CoinImpl.Dime, CoinImpl.Nickel).map { _bank.getOrDefault(it, 0) }.none { it < 1 }
+            acceptableCoins.map { _bank.getOrDefault(it, 0) }.none { it < 1 }
 
     fun makeChange(amount: Int): List<Coin> {
         val returnList = mutableListOf<Coin>()
@@ -84,7 +84,7 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
             return __amount
         }
 
-        for (c in listOf(CoinImpl.Quarter, CoinImpl.Dime, CoinImpl.Nickel)) {
+        for (c in acceptableCoins) {
             _amount = makeChangeForCoin(_amount, c, returnList)
         }
 
@@ -92,6 +92,7 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     }
 
     companion object {
+        val acceptableCoins = listOf(Denominations.Quarter, Denominations.Dime, Denominations.Nickel)
         val INSERT_COIN = "INSERT COIN"
         val EXACT_CHANGE_ONLY = "EXACT CHANGE ONLY"
         val SOLD_OUT = "SOLD OUT"

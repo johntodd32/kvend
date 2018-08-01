@@ -7,8 +7,8 @@ import java.util.Scanner
 class Driver(input: InputStream, private val output: PrintStream) {
 
     private val scanner = Scanner(input)
-    private val stock: Map<Product, Int> = mapOf(Product.Cola to 10, Product.Chips to 10, Product.Candy to 10)
-    private val bank: Map<Coin, Int> = mapOf(CoinImpl.Quarter to 10, CoinImpl.Dime to 10, CoinImpl.Nickel to 10)
+    private val stock: Map<Product, Int> = Product.values().associate { it to 10 }
+    private val bank: Map<Coin, Int> = VendingMachine.acceptableCoins.associate { it to 10 }
     private val machine = VendingMachine(stock, bank)
 
     fun run() {
@@ -21,12 +21,12 @@ class Driver(input: InputStream, private val output: PrintStream) {
                 'D' -> output.println(machine.display())
                 'I' -> {
                     when {
-                        argument == "P" -> machine.accept(CoinImpl.Penny)
-                        argument == "N" -> machine.accept(CoinImpl.Nickel)
-                        argument == "D" -> machine.accept(CoinImpl.Dime)
-                        argument == "Q" -> machine.accept(CoinImpl.Quarter)
-                        argument == "H" -> machine.accept(CoinImpl.HalfDollar)
-                        argument == "L" -> machine.accept(CoinImpl.Dollar)
+                        argument == "P" -> machine.accept(Denominations.Penny)
+                        argument == "N" -> machine.accept(Denominations.Nickel)
+                        argument == "D" -> machine.accept(Denominations.Dime)
+                        argument == "Q" -> machine.accept(Denominations.Quarter)
+                        argument == "H" -> machine.accept(Denominations.HalfDollar)
+                        argument == "L" -> machine.accept(Denominations.Dollar)
                         argument.startsWith("S") -> {
                             val (diameter, mass) = argument.substring(1).split(",")
                             machine.accept(Slug((diameter.toFloat() * 10000).toInt(), (mass.toFloat() * 10000).toInt()))

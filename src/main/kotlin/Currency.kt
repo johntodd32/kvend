@@ -10,7 +10,7 @@ interface Coin {
     val monetaryValue: Int
 }
 
-enum class CoinImpl : Coin {
+enum class Denominations : Coin {
     Dollar {
         override val diameter = 2649
         override val mass = 8100
