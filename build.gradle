@@ -1,4 +1,5 @@
 plugins {
+    id 'application'
     id 'org.jetbrains.kotlin.jvm' version '1.2.51'
 }
 
@@ -21,3 +22,12 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.jtodd.kvend.vend.DriverKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+mainClassName = 'org.jtodd.kvend.vend.DriverKt'
