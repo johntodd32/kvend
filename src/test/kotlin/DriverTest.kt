@@ -34,7 +34,7 @@ class DriverTest {
 
         Driver(input, output).run()
 
-        assertEquals(expectedSplash, baos.toString(), "Wrong splash generated")
+        assertEquals(expected = expectedSplash, actual = baos.toString(), message = "Wrong splash generated")
     }
 
     @test
@@ -43,7 +43,7 @@ class DriverTest {
 
         Driver(input, output).run()
 
-        assertTrue(baos.toString().contains("Unrecognized command"), "User should be warned when an unrecognized command is entered")
+        assertTrue(actual = baos.toString().contains("Unrecognized command"), message = "User should be warned when an unrecognized command is entered")
     }
 
     @test
@@ -52,7 +52,7 @@ class DriverTest {
 
         Driver(input, output).run()
 
-        assertTrue(baos.toString().contains(VendingMachine.INSERT_COIN), "Machine should return display when requested")
+        assertTrue(actual = baos.toString().contains(VendingMachine.INSERT_COIN), message = "Machine should return display when requested")
     }
 
     @test
@@ -61,7 +61,7 @@ class DriverTest {
 
         Driver(input, output).run()
 
-        assertTrue(baos.toString().contains(VendingMachine.formatPrice(Product.Chips.price)), "Machine should respond to purchases")
+        assertTrue(actual = baos.toString().contains(VendingMachine.formatPrice(Product.Chips.price)), message = "Machine should respond to purchases")
     }
 
     @test
@@ -70,7 +70,7 @@ class DriverTest {
 
         Driver(input, output).run()
 
-        assertTrue(baos.toString().contains("$0.35"), "Machine should accept coins")
+        assertTrue(actual = baos.toString().contains("$0.35"), message = "Machine should accept coins")
     }
 
     @test
@@ -79,7 +79,7 @@ class DriverTest {
 
         Driver(input, output).run()
 
-        assertTrue(baos.toString().contains("$0.25"), "Machine should accept coins")
-        assertTrue(baos.toString().contains(VendingMachine.INSERT_COIN), "Cancel should reset display")
+        assertTrue(actual = baos.toString().contains("$0.25"), message = "Machine should accept coins")
+        assertTrue(actual = baos.toString().contains(VendingMachine.INSERT_COIN), message = "Cancel should reset display")
     }
 }

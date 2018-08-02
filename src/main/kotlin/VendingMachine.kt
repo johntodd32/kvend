@@ -48,15 +48,15 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
 
     fun buy(product: Product) {
         if (product.price > _acceptedValue) {
-            setDisplayWithLifetime(formatPrice(product.price), 1)
+            setDisplayWithLifetime(message = formatPrice(product.price), lifetime = 1)
         } else if (!_stock.containsKey(product) || _stock[product]!! < 1) {
-            setDisplayWithLifetime(SOLD_OUT, 1)
+            setDisplayWithLifetime(message = SOLD_OUT, lifetime = 1)
         } else {
             acceptedCoinList.forEach { it -> _bank[it] = _bank[it]!! + 1 }
             acceptedCoinList.clear()
-            _coinReturn.addAll(makeChange(_acceptedValue - product.price))
+            _coinReturn.addAll(makeChange(amount = _acceptedValue - product.price))
             _stock[product] = _stock[product]!! - 1
-            setDisplayWithLifetime(THANK_YOU, 1)
+            setDisplayWithLifetime(message = THANK_YOU, lifetime = 1)
         }
     }
 

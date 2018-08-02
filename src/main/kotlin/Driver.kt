@@ -9,7 +9,7 @@ class Driver(input: InputStream, private val output: PrintStream) {
     private val scanner = Scanner(input)
     private val stock: Map<Product, Int> = Product.values().associate { it to 10 }
     private val bank: Map<Coin, Int> = VendingMachine.acceptableCoins.associate { it to 10 }
-    private val machine = VendingMachine(stock, bank)
+    private val machine = VendingMachine(stock = stock, bank = bank)
 
     fun run() {
         displayOptions(output)
