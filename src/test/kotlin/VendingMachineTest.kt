@@ -56,16 +56,18 @@ class VendingMachineTest {
     }
 
     @test
-    fun `only nickels, dimes, and quarters are valid inputs`() {
+    fun `only nickels, dimes, quarters, and well-crafted slugs are valid inputs`() {
         val p = Denominations.Penny
-        val s = Slug(1, 1)
+        val badSlug = Slug(1, 1)
+        val goodSlug = Slug(diameter = 2426, mass = 5670)
         machine.accept(Denominations.Dime)
         machine.accept(Denominations.Nickel)
         machine.accept(Denominations.Quarter)
         machine.accept(p)
-        machine.accept(s)
-        assertEquals(expected = "$0.40", actual = machine.display(), message = "Wrong display after some coins inserted")
-        assertEquals(expected = listOf(p, s), actual = machine.coinReturn(), message = "Wrong coin list returned")
+        machine.accept(badSlug)
+        machine.accept(goodSlug)
+        assertEquals(expected = "$0.65", actual = machine.display(), message = "Wrong display after some coins inserted")
+        assertEquals(expected = listOf(p, badSlug), actual = machine.coinReturn(), message = "Wrong coin list returned")
     }
 
     @test
@@ -74,9 +76,9 @@ class VendingMachineTest {
         val n: Coin = Denominations.Nickel
         val s: Coin = Slug(2121, 5000)
         assertTrue(actual = VendingMachine.matchCoins(q1, Denominations.Quarter), message = "Should have matched quarter to quarter")
-        assertFalse(actual = VendingMachine.matchCoins(Denominations.Quarter, n), message = "Should not have matched quarter to nickel")
-        assertFalse(actual = VendingMachine.matchCoins(q1, s), message = "Should not have matched quarter to slug")
-        assertTrue(actual = VendingMachine.matchCoins(s, n), message = "Should have matched nickel to a well-crafted slug")
+        assertFalse(actual = VendingMachine.matchCoins(n, Denominations.Quarter), message = "Should not have matched quarter to nickel")
+        assertFalse(actual = VendingMachine.matchCoins(s, Denominations.Quarter), message = "Should not have matched quarter to slug")
+        assertTrue(actual = VendingMachine.matchCoins(s, Denominations.Nickel), message = "Should have matched nickel to a well-crafted slug")
     }
 
     @test
@@ -186,7 +188,7 @@ class VendingMachineTest {
         fun compareCoinLists(l1: List<Coin>, l2: List<Coin>): Boolean {
             val l1Sorted = l1.sortedBy { it -> it.monetaryValue }
             val l2Sorted = l2.sortedBy { it -> it.monetaryValue }
-            return l1Sorted.zip(l2Sorted).all { (c1, c2) -> VendingMachine.matchCoins(c1, c2) }
+            return l1Sorted.zip(l2Sorted).all { (c1, c2) -> c1.diameter == c2.diameter && c1.mass == c2.mass }
         }
     }
 }

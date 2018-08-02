@@ -18,7 +18,7 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
         if (bank.values.any { it < 0 }) {
             throw IllegalArgumentException("No coin in the bank can have a negative count")
         }
-        bank.filter { (k, v) -> k in acceptableCoins }.forEach { (k, v) -> this.bank[k] = v }
+        bank.filter { (k, _) -> k in acceptableCoins }.forEach { (k, v) -> this.bank[k] = v }
     }
 
     fun display(): String {
@@ -35,10 +35,11 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
     }
 
     fun accept(coin: Coin) {
-        if (acceptableCoins.any { matchCoins(coin, it) } ) {
-            acceptedCoinList.add(coin)
-        } else {
+        val denominationMatch = acceptableCoins.find { matchCoins(coin, it) }
+        if (denominationMatch == null) {
             coinReturn.add(coin)
+        } else {
+            acceptedCoinList.add(denominationMatch)
         }
     }
 
@@ -108,9 +109,9 @@ class VendingMachine(stock: Map<Product, Int>, bank: Map<Coin, Int>) {
             return "\$$dollars.${"%02d".format(cents)}"
         }
 
-        fun matchCoins(c1: Coin, c2: Coin): Boolean {
-            return c1.diameter  == c2.diameter &&
-                   c1.mass      == c2.mass
+        fun matchCoins(c: Coin, d: Denominations): Boolean {
+            return c.diameter  == d.diameter &&
+                   c.mass      == d.mass
         }
     }
 }
